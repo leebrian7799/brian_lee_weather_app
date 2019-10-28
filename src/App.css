@@ -18,19 +18,17 @@
 }
 
 .App-link {
-  color: #09d3ac;
+  color: darkorange;
 }
 
-#message {
-  color: crimson;
-  margin: 0 0 30px 0;
-}
-
-body {
-  text-align: center;
-  background-image: url(https://picsum.photos/id/1029/1920/1080?grayscale);
+html {
+  background: url(https://picsum.photos/id/1029/1920/1080?grayscale) no-repeat
+    center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   background-size: cover;
-  background-repeat: no-repeat;
+  text-align: center;
 }
 
 input {
@@ -48,4 +46,9 @@ input {
 
 #icon {
   width: 5rem;
+}
+
+#message {
+  color: darkorange;
+  margin: 0 0 30px 0;
 }

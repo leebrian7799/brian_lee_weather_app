@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import { ClipLoader } from "react-spinners";
+import Weather from "./component/Weather";
 
 class App extends Component {
   constructor(props) {
@@ -17,6 +18,11 @@ class App extends Component {
     this.processCoord = this.processCoord.bind(this);
   }
 
+  /**
+   * Process inputed text
+   * 1. Look up the Where On Earth Identifier associated with the city
+   * 2. If found, retrieve the weather data. Otherwise, output error message.
+   */
   processText(text) {
     fetch(
       "https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/search/?query=" +
@@ -38,7 +44,7 @@ class App extends Component {
               .then(resp => resp.json())
               .then(({ consolidated_weather }) => {
                 if (!!consolidated_weather) {
-                  weatherData = consolidated_weather[0];
+                  weatherData = consolidated_weather;
                 } else {
                   message = "No weather data";
                 }
@@ -52,7 +58,11 @@ class App extends Component {
         }
       });
   }
-
+  /**
+   * Process geographical coordinate
+   * 1. Look up the Where On Earth Identifier associated with the coordinate
+   * 2. If found, retrieve the weather data. Otherwise, output error message.
+   */
   processCoord(coord) {
     fetch(
       "https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/search/?lattlong=" +
@@ -68,7 +78,7 @@ class App extends Component {
           .then(resp => resp.json())
           .then(({ consolidated_weather }) => {
             if (!!consolidated_weather) {
-              weatherData = consolidated_weather[0];
+              weatherData = consolidated_weather;
             } else {
               message = "No weather data";
             }
@@ -80,6 +90,7 @@ class App extends Component {
   handleSubmit = event => {
     event.preventDefault();
     event.target.reset();
+    //Regex to ensure the input is either all letters or a valid coordinate
     var letters = /^[A-Za-z\s]+$/;
     var lattlong = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
 
@@ -104,11 +115,18 @@ class App extends Component {
   }
 
   render() {
+    var weatherCards;
+    if (!!this.state.data) {
+      weatherCards = this.state.data.map((weatherD, i) => (
+        <Weather data={weatherD} key={i} />
+      ));
+    }
+
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
           <label>
-            <h1>Today's Weather</h1>
+            <h1>Weather Forecast</h1>
             <input
               type="text"
               value={this.state.value}
@@ -122,49 +140,13 @@ class App extends Component {
         <ClipLoader
           sizeUnit={"px"}
           size={125}
-          color={"red"}
+          color={"coral"}
           loading={this.state.isLoading}
         />
-        <Weather data={this.state.data} id="weather">
-          {" "}
-        </Weather>
+        {weatherCards}
       </div>
     );
   }
 }
-
-const Weather = props => {
-  if (!!props.data) {
-    let imgLink =
-      "https://www.metaweather.com/static/img/weather/" +
-      props.data.weather_state_abbr +
-      ".svg";
-    return (
-      <div className="weather">
-        <img src={imgLink} alt="Icon" id="icon" />
-        <div>{props.data.weather_state_name}</div>
-        <div>
-          Temperature: {parseInt(props.data.the_temp)}°C /{" "}
-          {parseInt((props.data.the_temp * 9) / 5 + 32)}°F
-        </div>
-        <div>
-          High: {parseInt(props.data.max_temp)}°C /{" "}
-          {parseInt((props.data.max_temp * 9) / 5 + 32)}°F
-        </div>
-        <div>
-          Low: {parseInt(props.data.min_temp)}°C /{" "}
-          {parseInt((props.data.min_temp * 9) / 5 + 32)}°F
-        </div>
-        <div>Humidity {parseInt(props.data.humidity)}%</div>
-        <div>
-          Wind: {parseInt(props.data.wind_speed)}mph (
-          {props.data.wind_direction_compass})
-        </div>
-      </div>
-    );
-  } else {
-    return <div></div>;
-  }
-};
 
 export default App;
