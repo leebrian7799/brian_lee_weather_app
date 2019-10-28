@@ -17,12 +17,13 @@ class Weather extends React.Component {
       "https://www.metaweather.com/static/img/weather/" +
       weather_state_abbr +
       ".svg";
-    let date = new Date(applicable_date);
+    let month = parseDate(applicable_date).getMonth() + 1;
+    let date = parseDate(applicable_date).getDate();
     return (
       <div className="weather">
         <img src={imgLink} alt="Icon" id="icon" />
         <h3>
-          {date.getMonth() + 1}/{date.getDate()}
+          {month}/{date}
         </h3>
         <div>{weather_state_name}</div>
         <div>
@@ -48,6 +49,11 @@ function cToF(celsius) {
   var cTemp = celsius;
   var fTemp = (cTemp * 9) / 5 + 32;
   return parseInt(fTemp);
+}
+
+function parseDate(input) {
+  var parts = input.match(/(\d+)/g);
+  return new Date(parts[0], parts[1] - 1, parts[2]);
 }
 
 export default Weather;
