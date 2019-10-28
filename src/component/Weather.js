@@ -1,9 +1,5 @@
 import React from "react";
 class Weather extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const {
       applicable_date,
@@ -16,6 +12,7 @@ class Weather extends React.Component {
       wind_speed,
       wind_direction_compass
     } = this.props.data;
+
     let imgLink =
       "https://www.metaweather.com/static/img/weather/" +
       weather_state_abbr +
@@ -25,7 +22,7 @@ class Weather extends React.Component {
       <div className="weather">
         <img src={imgLink} alt="Icon" id="icon" />
         <h3>
-          {date.getMonth()}/{date.getDate()}
+          {date.getMonth() + 1}/{date.getDate()}
         </h3>
         <div>{weather_state_name}</div>
         <div>
